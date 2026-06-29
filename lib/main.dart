@@ -21,18 +21,18 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => BillingController()),
       ],
-      child: const SmartBillingApp(),
+      child: const CartSnapApp(),
     ),
   );
 }
 
-class SmartBillingApp extends StatelessWidget {
-  const SmartBillingApp({super.key});
+class CartSnapApp extends StatelessWidget {
+  const CartSnapApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Billing',
+      title: 'CartSnap',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,

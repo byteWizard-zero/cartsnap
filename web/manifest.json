@@ -1,6 +1,6 @@
 {
-    "name": "smart_billing_app",
-    "short_name": "smart_billing_app",
+    "name": "CartSnap",
+    "short_name": "CartSnap",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

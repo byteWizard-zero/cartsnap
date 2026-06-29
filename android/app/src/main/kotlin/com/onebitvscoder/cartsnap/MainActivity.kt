@@ -1,4 +1,4 @@
-package com.example.smart_billing_app
+package com.onebitvscoder.cartsnap
 
 import io.flutter.embedding.android.FlutterActivity
 

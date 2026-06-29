@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.smart_billing_app"
+    namespace = "com.onebitvscoder.cartsnap"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.smart_billing_app"
+        applicationId = "com.onebitvscoder.cartsnap"
         
         // 🚀 This explicitly fixes the Line 27 error!
         minSdk = flutter.minSdkVersion
