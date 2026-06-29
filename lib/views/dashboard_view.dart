@@ -115,7 +115,9 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
                     'What are we\nselling today?',
                     style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2, letterSpacing: -1),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 16),
+                  _buildUpdateBanner(billingController),
+                  const SizedBox(height: 16),
 
                   Expanded(
                     child: GridView.count(
@@ -475,6 +477,67 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
             },
             child: const Text("Update"),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpdateBanner(BillingController controller) {
+    if (!controller.hasUpdate) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF2F80ED), Color(0xFF56CCF2)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2F80ED).withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Update Available! (${controller.latestVersion})",
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  "New features are ready. Tap to download.",
+                  style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => _redirectToPlatform(controller.updateDownloadUrl),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFF2F80ED),
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text("Get", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          ),
+          const SizedBox(width: 4),
+          IconButton(
+            icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 20),
+            onPressed: () => controller.dismissUpdateNotification(),
+          ),
         ],
       ),
     );

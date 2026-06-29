@@ -38,6 +38,7 @@ class BillingController extends ChangeNotifier {
   BillingController() {
     _initDatabase();
     _checkPrinterStatus();
+    checkForUpdates();
   }
 
   Future<void> _initDatabase() async {
@@ -453,5 +454,97 @@ class BillingController extends ChangeNotifier {
         ],
       ),
     ) ?? false;
+  }
+
+  // 🚀 Auto-Update Feature Variables
+  static const String appVersion = "1.2.0"; // Current App Version
+  
+  bool _hasUpdate = false;
+  bool get hasUpdate => _hasUpdate;
+  
+  bool _isCheckingUpdate = false;
+  bool get isCheckingUpdate => _isCheckingUpdate;
+  
+  String _latestVersion = "";
+  String get latestVersion => _latestVersion;
+  
+  String _updateDownloadUrl = "";
+  String get updateDownloadUrl => _updateDownloadUrl;
+  
+  String _updateReleaseNotes = "";
+  String get updateReleaseNotes => _updateReleaseNotes;
+
+  Future<void> checkForUpdates() async {
+    _isCheckingUpdate = true;
+    notifyListeners();
+
+    try {
+      // First try cartsnap repository URL
+      var response = await http.get(
+        Uri.parse('https://api.github.com/repos/1bitVscoder/cartsnap/releases/latest'),
+      ).timeout(const Duration(seconds: 5));
+
+      // Fallback to old smart_billing_app URL if cartsnap repository doesn't exist yet
+      if (response.statusCode == 404) {
+        response = await http.get(
+          Uri.parse('https://api.github.com/repos/1bitVscoder/smart_billing_app/releases/latest'),
+        ).timeout(const Duration(seconds: 5));
+      }
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final String tag = data['tag_name'] ?? "";
+        
+        if (tag.isNotEmpty && _isNewerVersion(tag, appVersion)) {
+          _hasUpdate = true;
+          _latestVersion = tag;
+          _updateReleaseNotes = data['body'] ?? "No release notes provided.";
+          
+          // Try to find apk asset in the assets list
+          final assets = data['assets'] as List?;
+          if (assets != null && assets.isNotEmpty) {
+            final apkAsset = assets.firstWhere(
+              (asset) => asset['name'].toString().toLowerCase().endsWith('.apk'),
+              orElse: () => null,
+            );
+            if (apkAsset != null) {
+              _updateDownloadUrl = apkAsset['browser_download_url'] ?? "";
+            }
+          }
+          
+          // If no specific APK found, fall back to the release HTML page
+          if (_updateDownloadUrl.isEmpty) {
+            _updateDownloadUrl = data['html_url'] ?? "";
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Auto-update check exception: $e");
+    } finally {
+      _isCheckingUpdate = false;
+      notifyListeners();
+    }
+  }
+
+  bool _isNewerVersion(String latest, String current) {
+    final cleanLatest = latest.replaceAll(RegExp(r'[a-zA-Z]'), '').trim();
+    final cleanCurrent = current.replaceAll(RegExp(r'[a-zA-Z]'), '').trim();
+    
+    List<int> latestParts = cleanLatest.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    List<int> currentParts = cleanCurrent.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    
+    int maxLength = latestParts.length > currentParts.length ? latestParts.length : currentParts.length;
+    for (int i = 0; i < maxLength; i++) {
+      int latestVal = i < latestParts.length ? latestParts[i] : 0;
+      int currentVal = i < currentParts.length ? currentParts[i] : 0;
+      if (latestVal > currentVal) return true;
+      if (latestVal < currentVal) return false;
+    }
+    return false;
+  }
+  
+  void dismissUpdateNotification() {
+    _hasUpdate = false;
+    notifyListeners();
   }
 }
