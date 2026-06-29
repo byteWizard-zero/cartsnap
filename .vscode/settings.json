@@ -1,3 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "snyk.advanced.organization": "225eb0ad-d188-4460-89b3-abbb8cecdda4",
+    "snyk.advanced.autoSelectOrganization": true
 }
