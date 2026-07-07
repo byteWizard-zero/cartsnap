@@ -283,7 +283,7 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
                       icon: Icons.terminal_rounded,
                       bgColor: const Color(0xFFECEFF1),
                       textColor: const Color(0xFF37474F),
-                      url: "https://github.com/1bitVscoder",
+                      url: "https://github.com/byteWizard-zero",
                     ),
                     _buildSocialCard(
                       label: "LinkedIn Pipeline",

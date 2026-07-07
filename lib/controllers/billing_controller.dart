@@ -481,13 +481,13 @@ class BillingController extends ChangeNotifier {
     try {
       // First try cartsnap repository URL
       var response = await http.get(
-        Uri.parse('https://api.github.com/repos/1bitVscoder/cartsnap/releases/latest'),
+        Uri.parse('https://api.github.com/repos/byteWizard-zero/cartsnap/releases/latest'),
       ).timeout(const Duration(seconds: 5));
 
       // Fallback to old smart_billing_app URL if cartsnap repository doesn't exist yet
       if (response.statusCode == 404) {
         response = await http.get(
-          Uri.parse('https://api.github.com/repos/1bitVscoder/smart_billing_app/releases/latest'),
+          Uri.parse('https://api.github.com/repos/byteWizard-zero/smart_billing_app/releases/latest'),
         ).timeout(const Duration(seconds: 5));
       }
 
