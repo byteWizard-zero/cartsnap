@@ -7,7 +7,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
 [![Offline First](https://img.shields.io/badge/Architecture-Offline_First-blue?style=for-the-badge)](#)
-[![Status](https://img.shields.io/badge/Build-v1.0.0_Stable-success?style=for-the-badge)](https://github.com/byteWizard-zero/cartsnap/releases/tag/v1.0.0)
+[![Status](https://img.shields.io/badge/Build-v1.1.0_Stable-success?style=for-the-badge)](https://github.com/byteWizard-zero/cartsnap/releases/tag/v1.1.0)
 
 CartSnap is a lightning-fast, offline-first Point of Sale (POS) and inventory management application built with Flutter. Designed for seamless retail operations, it features instant barcode scanning, permanent local caching, and native ESC/POS hardware integration for wireless thermal printing.
 

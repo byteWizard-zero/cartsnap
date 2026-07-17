@@ -68,15 +68,18 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
                       GestureDetector(
                         onTap: () => Scaffold.of(innerContext).openDrawer(),
                         child: Container(
-                          padding: const EdgeInsets.all(4),
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: Colors.black12, width: 1),
                           ),
-                          child: const CircleAvatar(
-                            radius: 22,
-                            backgroundColor: Colors.black,
-                            child: Icon(Icons.bolt_rounded, color: Colors.yellow, size: 24),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(11),
+                            child: Image.asset(
+                              'assets/logo.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -231,10 +234,20 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              const CircleAvatar(
-                radius: 36,
-                backgroundColor: Colors.black,
-                child: Icon(Icons.code_rounded, color: Colors.white, size: 34),
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.black12, width: 1),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    'assets/logo.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
