@@ -10,16 +10,17 @@ class Product {
     required this.name,
     required this.price,
     this.imageUrl,
-    this.quantity = 1, // Whenever an item is scanned the first time, quantity defaults to 1
+    this.quantity =
+        1, // Whenever an item is scanned the first time, quantity defaults to 1
   });
 
   // Helper method to easily create a copy of a product with an updated quantity
   Product copyWith({int? quantity, double? price}) {
     return Product(
-      barcode: this.barcode,
-      name: this.name,
+      barcode: barcode,
+      name: name,
       price: price ?? this.price,
-      imageUrl: this.imageUrl,
+      imageUrl: imageUrl,
       quantity: quantity ?? this.quantity,
     );
   }
