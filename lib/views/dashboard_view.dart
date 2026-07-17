@@ -16,6 +16,7 @@ class DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<DashboardView> with SingleTickerProviderStateMixin {
   late AnimationController _spinningController;
+  bool _hasShownUpdateDialog = false;
 
   @override
   void initState() {
@@ -50,6 +51,13 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final billingController = Provider.of<BillingController>(context);
+
+    if (billingController.hasUpdate && !_hasShownUpdateDialog) {
+      _hasShownUpdateDialog = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showUpdateDialog(context, billingController);
+      });
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FB),
@@ -224,6 +232,7 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
 
   Widget _buildDeveloperDrawer(BuildContext context) {
     final double drawerWidth = MediaQuery.of(context).size.width * 0.76;
+    final billingController = Provider.of<BillingController>(context);
     return SizedBox(
       width: drawerWidth,
       child: Drawer(
@@ -318,7 +327,7 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'v1.2.0 Stable • Cloud Configured',
+                      'v${billingController.currentAppVersion} Stable • Cloud Configured',
                       style: TextStyle(fontSize: 11, color: Colors.black38, fontFamily: 'monospace'),
                     ),
                   ],
@@ -594,6 +603,116 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
               ],
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  void _showUpdateDialog(BuildContext context, BillingController controller) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        contentPadding: EdgeInsets.zero,
+        content: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF2F80ED), Color(0xFF56CCF2)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 48),
+                    const SizedBox(height: 12),
+                    const Text(
+                      "Update Available!",
+                      style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Version ${controller.latestVersion} is ready to download",
+                      style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "What's New:",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 120),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.03),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Text(
+                          controller.updateReleaseNotes.isNotEmpty 
+                              ? controller.updateReleaseNotes 
+                              : "Performance improvements and bug fixes.",
+                          style: const TextStyle(fontSize: 13, color: Colors.black87, height: 1.4),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, color: Colors.black12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text("Later", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(width: 12),
+                    ElevatedButton(
+                      onPressed: () {
+                        _redirectToPlatform(controller.updateDownloadUrl);
+                        Navigator.pop(ctx);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2F80ED),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        elevation: 0,
+                      ),
+                      child: const Text("Update Now", style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

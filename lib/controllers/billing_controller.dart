@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../models/product_model.dart';
 
 class BillingController extends ChangeNotifier {
@@ -457,7 +458,8 @@ class BillingController extends ChangeNotifier {
   }
 
   // 🚀 Auto-Update Feature Variables
-  static const String appVersion = "1.2.0"; // Current App Version
+  String _currentAppVersion = "1.1.0"; // Fallback default
+  String get currentAppVersion => _currentAppVersion;
   
   bool _hasUpdate = false;
   bool get hasUpdate => _hasUpdate;
@@ -479,6 +481,13 @@ class BillingController extends ChangeNotifier {
     notifyListeners();
 
     try {
+      try {
+        final packageInfo = await PackageInfo.fromPlatform();
+        _currentAppVersion = packageInfo.version;
+      } catch (e) {
+        debugPrint("Could not retrieve package info: $e");
+      }
+
       // First try cartsnap repository URL
       var response = await http.get(
         Uri.parse('https://api.github.com/repos/byteWizard-zero/cartsnap/releases/latest'),
@@ -495,7 +504,7 @@ class BillingController extends ChangeNotifier {
         final data = jsonDecode(response.body);
         final String tag = data['tag_name'] ?? "";
         
-        if (tag.isNotEmpty && _isNewerVersion(tag, appVersion)) {
+        if (tag.isNotEmpty && _isNewerVersion(tag, _currentAppVersion)) {
           _hasUpdate = true;
           _latestVersion = tag;
           _updateReleaseNotes = data['body'] ?? "No release notes provided.";
